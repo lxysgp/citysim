@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Simulation Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        #status { margin-bottom: 20px; }
+        button { margin-right: 10px; padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #log { margin-top: 20px; padding: 10px; background-color: #fff; border-radius: 5px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <h1>City Simulation Game</h1>
+    <div id="status">
+        <p>Budget: $<span id="budget">10000</span></p>
+        <p>Population: <span id="population">5000</span> citizens</p>
+        <p>Happiness: <span id="happiness">70</span>%</p>
+    </div>
+    <div>
+        <button onclick="invest('hospital')">Invest in Hospital ($2000)</button>
+        <button onclick="invest('school')">Invest in School ($1500)</button>
+        <button onclick="invest('roads')">Invest in Roads ($2500)</button>
+        <button onclick="invest('save')">Save Money</button>
+    </div>
+    <div id="log"></div>
+    <script>
+        let budget = 10000;
+        let population = 5000;
+        let happiness = 70;
+        const log = document.getElementById('log');
+
+        function updateDisplay() {
+            document.getElementById('budget').textContent = budget;
+            document.getElementById('population').textContent = population;
+            document.getElementById('happiness').textContent = happiness;
+        }
+
+        function invest(type) {
+            if (budget > 0 && happiness > 0) {
+                let cost = 0;
+                let effect = "";
+
+                if (type === 'hospital' && budget >= 2000) {
+                    cost = 2000;
+                    happiness += 5;
+                    effect = "Investing in healthcare improves happiness.";
+                } else if (type === 'school' && budget >= 1500) {
+                    cost = 1500;
+                    population += 100;
+                    effect = "Building schools boosts population growth.";
+                } else if (type === 'roads' && budget >= 2500) {
+                    cost = 2500;
+                    happiness += 10;
+                    population += 50;
+                    effect = "Improving roads increases happiness and population.";
+                } else if (type === 'save') {
+                    effect = "Money saved for future use.";
+                }
+
+                if (cost > 0) {
+                    budget -= cost;
+                    logEntry("Spent $" + cost + ". " + effect);
+                } else if (type !== 'save') {
+                    logEntry("Not enough budget to invest in " + type + ".");
+                } else {
+                    logEntry(effect);
+                }
+
+                updateDisplay();
+                randomEvent();
+            }
+        }
+
+        function randomEvent() {
+            const event = Math.floor(Math.random() * 4);
+            let message = "";
+            switch (event) {
+                case 0:
+                    budget -= 1000;
+                    happiness -= 10;
+                    message = "A natural disaster occurred! Budget and happiness decreased.";
+                    break;
+                case 1:
+                    budget += 2000;
+                    message = "A booming economy! Budget increases.";
+                    break;
+                case 2:
+                    population += 200;
+                    message = "Population growth due to immigration.";
+                    break;
+                case 3:
+                    message = "No events this year.";
+                    break;
+            }
+            logEntry(message);
+            updateDisplay();
+        }
+
+        function logEntry(message) {
+            log.innerHTML += "<p>" + message + "</p>";
+        }
+    </script>
+</body>
+</html>
