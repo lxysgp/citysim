@@ -18,11 +18,14 @@
         <p>Budget: $<span id="budget">10000</span></p>
         <p>Population: <span id="population">5000</span> citizens</p>
         <p>Happiness: <span id="happiness">70</span>%</p>
+        <p>Tourism Level: <span id="tourism">0</span></p>
     </div>
     <div>
         <button onclick="invest('hospital')">Invest in Hospital ($2000)</button>
         <button onclick="invest('school')">Invest in School ($1500)</button>
         <button onclick="invest('roads')">Invest in Roads ($2500)</button>
+        <button onclick="invest('tourism')">Develop Tourist Attraction ($5000)</button>
+        <button onclick="setTariff()">Implement Tariffs</button>
         <button onclick="invest('save')">Save Money</button>
     </div>
     <div id="log"></div>
@@ -30,12 +33,15 @@
         let budget = 10000;
         let population = 5000;
         let happiness = 70;
+        let tourism = 0;
+        let tariffs = false;
         const log = document.getElementById('log');
 
         function updateDisplay() {
             document.getElementById('budget').textContent = budget;
             document.getElementById('population').textContent = population;
             document.getElementById('happiness').textContent = happiness;
+            document.getElementById('tourism').textContent = tourism;
         }
 
         function invest(type) {
@@ -56,6 +62,11 @@
                     happiness += 10;
                     population += 50;
                     effect = "Improving roads increases happiness and population.";
+                } else if (type === 'tourism' && budget >= 5000) {
+                    cost = 5000;
+                    tourism += 20;
+                    happiness += 5;
+                    effect = "Developing a tourist attraction increases tourism and happiness.";
                 } else if (type === 'save') {
                     effect = "Money saved for future use.";
                 }
@@ -74,8 +85,20 @@
             }
         }
 
+        function setTariff() {
+            if (!tariffs) {
+                tariffs = true;
+                budget += 2000;
+                happiness -= 5;
+                logEntry("Tariffs set. Budget increases at the cost of happiness.");
+                updateDisplay();
+            } else {
+                logEntry("Tariffs already in place.");
+            }
+        }
+
         function randomEvent() {
-            const event = Math.floor(Math.random() * 4);
+            const event = Math.floor(Math.random() * 5);
             let message = "";
             switch (event) {
                 case 0:
@@ -93,6 +116,11 @@
                     break;
                 case 3:
                     message = "No events this year.";
+                    break;
+                case 4:
+                    tourism += 10;
+                    budget += 1000;
+                    message = "Tourists are flocking to your city!";
                     break;
             }
             logEntry(message);
